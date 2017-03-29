@@ -1,1 +1,35 @@
-<h1>test</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPS_Interval_HE</title>
+</head>
+<body>
+<p>table:</p>
+<table border="1">
+<tr>
+    <th>Det_ID</th>
+    <th>task_id</th>
+    <th>start_time</th>
+    <th>stop_time</th>
+    <th>duration</th>
+    <th>data</th>
+</tr>
+{% for t in id1101_form %}
+<!--<p>Det_ID:{{ t.index }} task_id:{{ t.task_id }} starttime:{{ t.start_time }} stoptime:{{ t.finished_time }}
+duration:{{ t.duration}}  data:{{ t.data }}</p>-->
+<tr>
+    <td>{{ t.index }}</td>
+    <td>{{ t.task_id }}</td>
+    <td>{{ t.start_time }}</td>
+    <td>{{ t.finished_time }}</td>
+    <td>{{ t.duration }}</td>
+    <td>{{ t.data }}</td>
+</tr>
+
+
+
+{% endfor %}
+</table>
+</body>
+</html>
