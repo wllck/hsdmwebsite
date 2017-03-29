@@ -81,7 +81,7 @@ DATABASES = {
         #'NAME': os.path.join(BASE_DIR, 'hsdm'),
         'NAME': 'hsdm',
         'USER':'root',
-        'PASSWORD':'370902lh',
+        'PASSWORD':'123456',
         'HOST':'localhost',
         'PORT':3306,
     }
