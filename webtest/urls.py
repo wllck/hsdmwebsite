@@ -14,11 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from hsdm import views
+from hsdm import views as views
 from django.contrib import admin
+from webtest import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$',views.home,name='home'),
-    url(r'^id1101$',views.id1101,name='id1101')
+    url(r'^id1101$',views.id1101,name='id1101'),
+    #url(r'^static/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.STATIC_ROOT}, name='static'),
 ]

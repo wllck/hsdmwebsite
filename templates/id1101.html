@@ -21,10 +21,29 @@
             stroke-width:3px;
             stroke-dasharray: down;
         }
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+            }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .mytext{
+            fill:black;
+            text-anchor: middle;
+            font-size:11px;
+        }
     </style>
-    <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<!--    <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script> -->
+    {% load static %}
+    {{ static }}
+     <script src="{% static "d3.min.js" %}"></script>
 </head>
 <body>
+<!--
 <p>table:</p>
 <table border="1">
 <tr>
@@ -37,10 +56,8 @@
 </tr>
 </table>
 
-{{ id_data }}
 <p>
 {% for t in  id_data  %}
-<!--
 <tr>
     <td>{{ t.index }}</td>
     <td>{{ t.task_id }}</td>
@@ -50,28 +67,8 @@
     <td>{{ t.data }}</td>
 </tr>
 {{ t }}
--->
 {% endfor %}
 </p>
-<!--
-<script>
-    var body = d3.select("body");
-    var svg = body.append("svg")
-            .attr("width",400)
-            .attr("height",400);
-    svg.append("circle")
-            .attr("cx",100)
-            .attr("cy",200)
-            .attr("r",100)
-            .attr("fill","blue")
-            .attr("class","mycircle");
-    svg.append("rect")
-            .attr("x",200)
-            .attr("y",120)
-            .attr("width",100)
-            .attr("height",120)
-            .attr("class","myrect");
-</script>
 -->
 <script>
     var List = {{ id_data|safe }};
@@ -79,7 +76,7 @@
         document.write("<p>");
         document.write(List[t].fields.data);
         document.write("</p>");
-        var sdata = (List[t].fields.data).split(" ,");
+        var sdata = (List[t].fields.data).split(", ");
         var hdata =[];
         hdata = sdata.map(function(data){
             return +data;
@@ -88,21 +85,40 @@
         console.log(hdata);
         var dmax = d3.max(hdata);
         console.log(dmax);
-        var body = d3.select("body");
-        var svg = body.append("svg")
-                .attr("width",400)
-                .attr("height",400);
         console.log(hdata);
-        var padding = {top:20,right:20,bottom:20,left:20};
-        var rectWidth = 30;
-        var rectStep =35;
+        var body = d3.select("body");
+        var padding = {top:20,right:0,bottom:20,left:0};
+        var ticknumb = 15;
         var height = 400;
-        var width = 400;
+        var width = 450;
+        var rectStep = width/ticknumb;
+        var rectWidth = rectStep-2;
+        var svg = body.append("svg")
+                .attr("width",width)
+                .attr("height",height);
+        var xScale = d3.scaleLinear()
+                .domain([0,ticknumb])
+                .range([0,width]);
+        var xAxis = d3.axisBottom()
+                .scale(xScale);
+        var gxAxis = svg.append("g")
+                .attr("transform","translate(56,"+String(height-padding.bottom)+")");//56= leftshift of rect(42) + rectwidth/2
+        xAxis(gxAxis);
+        var yScale = d3.scaleLinear()
+                .domain([dmax,0])
+                .range([0,height-padding.bottom]);
+        var yAxis = d3.axisLeft()
+                .scale(yScale);
+        var gyAxis = svg.append("g")
+                .attr("class","axis")
+                .attr("transform","translate(41,0)");
+        yAxis(gyAxis);
         var rect = svg.selectAll("rect")
                 .data(hdata)
                 .enter()
                 .append("rect")
                 .attr("fill","steelblue")
+                .attr("transform","translate(42,0)")
                 .attr("x",function(d,i){
                     return padding.left+i * rectStep;
                 })
@@ -112,6 +128,26 @@
                 .attr("width",rectWidth)
                 .attr("height",function(d){
                     return d/dmax*height;
+                });
+        var text = svg.selectAll(".mytext")
+                .data(hdata)
+                .enter()
+                .append("text")
+                .attr("class","mytext")
+                //.attr("fill","white")
+                //.attr("font-size","14px")
+                //.attr("text-anchor","middle")
+                .attr("transform","translate(42,0)")
+                .attr("x",function(d,i){
+                    return padding.left+i*rectStep;
+                })
+                .attr("y",function(d){
+                    return height-padding.bottom-d/dmax*height;
+                })
+                .attr("dx",rectWidth/2)
+                .attr("dy","30")
+                .text(function(d){
+                    return d;
                 });
     }
 </script>
