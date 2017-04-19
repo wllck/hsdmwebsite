@@ -3,6 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>GPS_Interval_HE</title>
+    <style>
+        table
+        {
+            border-collapse:collapse;
+        }
+        .mycircle
+        {
+        fill:green;
+        stroke:black;
+            stroke-width:3px;
+        }
+        .myrect
+        {
+            fill:yellow;
+            stroke:red;
+            stroke-width:3px;
+            stroke-dasharray: down;
+        }
+    </style>
+    <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
 </head>
 <body>
 <p>table:</p>
@@ -15,9 +35,12 @@
     <th>duration</th>
     <th>data</th>
 </tr>
-{% for t in id1101_form %}
-<!--<p>Det_ID:{{ t.index }} task_id:{{ t.task_id }} starttime:{{ t.start_time }} stoptime:{{ t.finished_time }}
-duration:{{ t.duration}}  data:{{ t.data }}</p>-->
+</table>
+
+{{ id_data }}
+<p>
+{% for t in  id_data  %}
+<!--
 <tr>
     <td>{{ t.index }}</td>
     <td>{{ t.task_id }}</td>
@@ -26,10 +49,71 @@ duration:{{ t.duration}}  data:{{ t.data }}</p>-->
     <td>{{ t.duration }}</td>
     <td>{{ t.data }}</td>
 </tr>
-
-
-
+{{ t }}
+-->
 {% endfor %}
-</table>
+</p>
+<!--
+<script>
+    var body = d3.select("body");
+    var svg = body.append("svg")
+            .attr("width",400)
+            .attr("height",400);
+    svg.append("circle")
+            .attr("cx",100)
+            .attr("cy",200)
+            .attr("r",100)
+            .attr("fill","blue")
+            .attr("class","mycircle");
+    svg.append("rect")
+            .attr("x",200)
+            .attr("y",120)
+            .attr("width",100)
+            .attr("height",120)
+            .attr("class","myrect");
+</script>
+-->
+<script>
+    var List = {{ id_data|safe }};
+    for (t in List){
+        document.write("<p>");
+        document.write(List[t].fields.data);
+        document.write("</p>");
+        var sdata = (List[t].fields.data).split(" ,");
+        var hdata =[];
+        hdata = sdata.map(function(data){
+            return +data;
+        });
+        console.log(typeof hdata);
+        console.log(hdata);
+        var dmax = d3.max(hdata);
+        console.log(dmax);
+        var body = d3.select("body");
+        var svg = body.append("svg")
+                .attr("width",400)
+                .attr("height",400);
+        console.log(hdata);
+        var padding = {top:20,right:20,bottom:20,left:20};
+        var rectWidth = 30;
+        var rectStep =35;
+        var height = 400;
+        var width = 400;
+        var rect = svg.selectAll("rect")
+                .data(hdata)
+                .enter()
+                .append("rect")
+                .attr("fill","steelblue")
+                .attr("x",function(d,i){
+                    return padding.left+i * rectStep;
+                })
+                .attr("y",function(d){
+                    return height- padding.bottom - d/dmax*height;
+                })
+                .attr("width",rectWidth)
+                .attr("height",function(d){
+                    return d/dmax*height;
+                });
+    }
+</script>
 </body>
 </html>
